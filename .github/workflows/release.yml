@@ -1,0 +1,44 @@
+name: Release
+
+# Dispatch-only on purpose: the version bump commits and tags pushed by the
+# action cannot re-trigger this workflow, so no workflow loop is possible.
+# Trigger it manually from the Actions tab and choose the bump type.
+on:
+  workflow_dispatch:
+    inputs:
+      bump:
+        description: 'Semantic version component to bump (see README for the bump policy)'
+        required: true
+        type: choice
+        default: minor
+        options:
+          - major
+          - minor
+          - patch
+
+# The job only needs to commit, tag and push the version bump.
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Bump version and tag
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repository (full history and tags)
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+
+      # Bumps VERSION, commits it, creates the exact tag (e.g. v1.2.3) and
+      # moves the floating v1.2 and v1 tags to the new release.
+      - name: Bump version, create tag, move floating tags
+        uses: code-of-chaos/action-version-bumper@178d33033049af70a42d5c580ed9ece4e7165267 # v2.1.0
+        with:
+          version_file: VERSION
+          bump: ${{ inputs.bump }}
+          commit: 'true'
+          tag: 'true'
+          push: 'true'
+          floating_major_version: 'true'
+          floating_minor_version: 'true'

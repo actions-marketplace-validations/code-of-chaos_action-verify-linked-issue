@@ -1,0 +1,15 @@
+# Python
+.venv/
+__pycache__/
+*.pyc
+.mypy_cache/
+.pytest_cache/
+
+# Tooling caches
+.ruff_cache/
+
+# Local tool downloads
+actionlint
+actionlint.exe
+actionlint*.tar.gz
+actionlint*.zip

@@ -1,0 +1,52 @@
+name: 'Verify Linked Issue'
+description: >-
+  Require every pull request to be linked to an existing GitHub issue, either with a
+  closing keyword or through the PR's Development section, and comment when it is not.
+author: 'Code-Of-Chaos'
+
+branding:
+  icon: 'link'
+  color: 'purple'
+
+inputs:
+  token:
+    description: >-
+      GitHub token used to read the pull request and its linked issues and to
+      create or update the failure comment. Defaults to the workflow's github.token.
+      Requires `pull-requests: write` to be able to comment.
+    required: false
+    default: ${{ github.token }}
+  github-api-url:
+    description: 'Base URL of the GitHub REST/GraphQL API. Defaults to github.api_url (set automatically; useful for GitHub Enterprise Server).'
+    required: false
+    default: ${{ github.api_url }}
+  comment-on-failure:
+    description: >-
+      When 'true', comment on the pull request if no linked issue is found. The
+      comment is updated in place on subsequent runs instead of posted again.
+    required: false
+    default: 'true'
+
+outputs:
+  linked-issues:
+    description: 'Comma-separated list of linked issues (owner/repo#number); empty when none were found.'
+    value: ${{ steps.verify.outputs.linked-issues }}
+
+runs:
+  using: 'composite'
+  steps:
+    # Python runtime for the action. Update deliberately: see "Updating the
+    # pinned Python version" in README.md (also update .github/workflows/ci.yml).
+    - name: Set up Python
+      uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+      with:
+        python-version: '3.15.2'
+
+    - name: Verify linked issue
+      id: verify
+      shell: bash
+      env:
+        INPUT_TOKEN: ${{ inputs.token }}
+        INPUT_GITHUB_API_URL: ${{ inputs.github-api-url }}
+        INPUT_COMMENT_ON_FAILURE: ${{ inputs.comment-on-failure }}
+      run: python "${{ github.action_path }}/src/action.py"

@@ -1,0 +1,7 @@
+# Pinned development dependencies for tests, linting and type checking.
+# The action itself has no third-party runtime dependencies (Python stdlib only).
+mypy==2.4.1
+pytest==9.2.0
+PyYAML==6.0.3
+ruff==0.17.6
+types-PyYAML==6.0.12.20261113
