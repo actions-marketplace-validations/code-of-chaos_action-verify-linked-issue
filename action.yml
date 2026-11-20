@@ -1,5 +1,7 @@
 name: 'Code Of Chaos Linked Issue Verifier'
-description: 'Require pull requests to be linked to an existing GitHub issue (closing keyword or Development link).'
+description: >-
+  Require every pull request to be linked to an existing GitHub issue, either with a
+  closing keyword or through the PR's Development section, and comment when it is not.
 author: 'Code-Of-Chaos'
 
 branding:
