@@ -46,6 +46,11 @@ def test_action_metadata_basics() -> None:
     action = _load(ACTION_YML)
     assert action["name"]
     assert action["description"]
+    # GitHub rejects action descriptions of 125 characters or more when the
+    # action is published (e.g. to the Marketplace).
+    assert len(action["description"]) < 125, (
+        f"description must be < 125 characters, got {len(action['description'])}"
+    )
     assert action["author"]
     assert action["branding"]["icon"]
     assert action["runs"]["using"] == "composite"
